@@ -128,9 +128,73 @@ Logs are automatically cleared when the application starts.
    ```
 3. Subscribe to an instrument:
 ```SUBSCRIBE:BTC-PERPETUAL```
-# Known Issues
-- Authentication Failure: Ensure your API credentials are valid.
-- Connection Issues: Verify network connectivity and Deribit server availability.
 
-# Contributing
-Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+# Benchmarking Testing Process
+
+The following steps outline the benchmarking testing process to evaluate the latencies in the system. The files are:
+
+```bash
+    automated_odc.cpp , which is the optimized version
+    automated_dom.cpp , which is the base version
+```
+## System Setup
+
+1. **Open four terminals.**
+
+2. **In the first terminal (Server Terminal):**
+   - Compile the main file:
+     ```bash
+     g++ -std=c++17 file.cpp -o deribit_app -lcurl -lssl -lcrypto -lboost_system -lpthread
+     ```
+
+3. **The remaining three terminals will act as Client Terminals.**
+
+**Running the Benchmark**
+
+1. **Option 1: Place Orders Automatically**
+   - Run option 1 to automatically place orders. 
+   - Options 2 and 3 will be ignored during benchmarking.
+
+2. **Option 4: Run the Benchmark**
+   - Execute option 4 to initiate the benchmark test for latency measurements.
+
+3. **Option 5: Record Latencies**
+   - Execute option 5 to record the latency values in the respective log files for further processing.
+
+4. **Option 6: Start Webserver**
+   - Run option 6 to start the web server for client-server communication.
+
+**Client Setup and Subscription**
+
+1. **Open all three client terminals.**
+
+2. **In each client terminal, connect to the server:**
+   ```bash
+   wscat -c ws://localhost:9002
+   ```
+
+3.  **Subscribe to market data streams:**
+- Client 1
+```
+SUBSCRIBE:ETH-PERPETUAL
+SUBSCRIBE:BTC-PERPETUAL
+```
+- Client 2
+```
+SUBSCRIBE:ETH-PERPETUAL
+SUBSCRIBE:BTC-PERPETUAL
+```
+- Client 3
+```
+SUBSCRIBE:ETH-PERPETUAL
+SUBSCRIBE:BTC-PERPETUAL
+```
+4. **Closing the Clients and Server**
+- Close the client terminals one by one.
+- Terminate the main server file's websocket connection.
+- End the program by executing option 8.
+
+5. **Final Latency Data**
+- Latencies will be recorded in the respective log files.
+- Process the recorded latencies for analysis.
