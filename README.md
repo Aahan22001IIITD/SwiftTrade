@@ -1,5 +1,22 @@
 # Deribit Integration Application
+# File Structure 
+```
+automated_dom.cpp -> basic version , automated code , for testing.
 
+automated_odc.cpp -> optimised version , automated code ,for testing 
+
+odc.cpp -> optimised documented code 
+
+dom.cpp -> documented basic main
+
+application_logs.txt -> basic logger for dom and its automated version 
+
+Optimised application_logs.txt -> logger for both optimised versions 
+ 
+LatencyLog.txt -> for latency logging for basic versions.
+
+Optimised Latency Log.txt -> for latency logging for optimised versions.
+```
 ## Overview
 This C++ application integrates with the Deribit cryptocurrency trading platform, enabling REST API and WebSocket functionalities. It provides real-time trading operations, market data, and a local WebSocket server for broadcasting updates to clients.
 
@@ -41,11 +58,7 @@ sudo apt-get install -y libcurl4-openssl-dev libssl-dev libboost-all-dev
 ```
 # Build Instructions
 
-## Clone the Repository
-```bash
-git clone <repository-url>
-cd <repository-folder>
-```
+
 Compile the Application
 ```bash
 g++ -std=c++17 odc.cpp -o deribit_app -lcurl -lssl -lcrypto -lboost_system -lpthread
@@ -198,3 +211,7 @@ SUBSCRIBE:BTC-PERPETUAL
 5. **Final Latency Data**
 - Latencies will be recorded in the respective log files.
 - Process the recorded latencies for analysis.
+
+# Bench Marking results
+- The benchmarking results and statistics are stored in ```BenchMarking.pdf``` file.
+- The Optimisation details are added in the file ```Bonus Domentation.cpp```.
