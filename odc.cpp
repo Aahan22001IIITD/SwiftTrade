@@ -1209,57 +1209,7 @@ public:
         logMessage("Server stopped.");
         cout << "[Info] WebSocket server stopped successfully." << endl;
     }
-    bool isValidInstrument(const string &instrument_name)
-    {
-        static unordered_set<string> validInstruments = {"BTC-PERPETUAL", "ETH-PERPETUAL", "LTC-USD"}; // Example cache of valid instruments
 
-        // Check against the cached set of valid instruments
-        if (validInstruments.find(instrument_name) != validInstruments.end())
-        {
-            return true;
-        }
-
-        // Perform validation if not found in the cache (e.g., query a server or database)
-        try
-        {
-            Net::io_context ioc;
-            BoostSSL::context ctx(BoostSSL::context::tlsv12_client);
-            ctx.set_verify_mode(BoostSSL::verify_none);
-
-            tcp::resolver resolver(ioc);
-            auto const results = resolver.resolve(DERIBIT_WS_HOST, DERIBIT_WS_PORT);
-
-            WebSocket::stream<Beast::ssl_stream<tcp::socket>> ws(ioc, ctx);
-            Beast::get_lowest_layer(ws).connect(results);
-            ws.next_layer().handshake(BoostSSL::stream_base::client);
-            ws.handshake(DERIBIT_WS_HOST, "/ws/api/v2");
-
-            json msg = {
-                {"jsonrpc", "2.0"},
-                {"id", 1},
-                {"method", "public/get_instrument"},
-                {"params", {{"instrument_name", instrument_name}}}};
-
-            ws.write(Net::buffer(msg.dump()));
-            Beast::flat_buffer buffer;
-            ws.read(buffer);
-
-            auto response = json::parse(Beast::buffers_to_string(buffer.data()));
-            if (response.contains("error"))
-            {
-                return false;
-            }
-
-            // Cache the instrument as valid
-            validInstruments.insert(instrument_name);
-            return true;
-        }
-        catch (const exception &e)
-        {
-            cerr << "[Error] Instrument validation failed: " << e.what() << endl;
-            return false;
-        }
-    }
     bool isValidInstrument(const string &instrument_name, const string &host, const string &port)
     {
         static unordered_set<string> validInstruments = {"BTC-PERPETUAL", "ETH-PERPETUAL", "LTC-USD"}; // Example cache of valid instruments
